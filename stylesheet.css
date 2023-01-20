@@ -1,0 +1,59 @@
+body {
+	background-color: #86BBBD;
+	font-family: Verdana;
+	text-align: center;
+	font-size: .6vw;
+}
+
+
+.items {
+	border-style: solid;
+	border-color: red;
+	width: 45%;
+	/* margin-left: auto; */
+	float: right;
+}
+
+.tile {
+	border-style: solid;
+	background-color: #fff;
+	margin: 10px 10px 10px auto;
+	padding: 2% 3% 2% 3%;
+	min-height: 10%;
+	width: 23%;
+	display: inline-block;
+	vertical-align: top;
+}
+
+.inputDiv {
+	width: 45%;
+	clear: both;
+	float: right;
+	position: relative;
+	background-color: #fff;
+	border-style: solid;
+	border-color: blue;
+}
+
+.graph {
+	border-style: solid;
+	border-color: greenyellow;
+
+
+	position: relative;
+	overflow: hidden;
+	width: 50%;
+	padding-top: 35%;
+	/* 16:9 Aspect Ratio (divide 9 by 16 = 0.5625) */
+}
+
+.responsive-iframe {
+	position: absolute;
+
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	width: 100%;
+	height: 100%;
+}

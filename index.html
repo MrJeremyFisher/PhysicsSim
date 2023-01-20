@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="stylesheet.css">
+	<script src="node_modules/evaluatex/dist/evaluatex.min.js"></script>
+
+	<script type="text/x-mathjax-config">
+		//apply config
+		  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+		</script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+	</script>
+
+
+	<title>
+		ISS Tracker
+	</title>
+
+
+</head>
+
+<body>
+
+	<div class="items">
+		<div class="tile">
+			
+			<h1 id="velocity">`v~=`<span id="velocitySpan"></span>`{km}/h`</h1>
+		</div>
+
+		<div class="tile">
+			<h1 id="altitude" title="Above sea level"><span id="altitudeSpan" title="Above sea level"></span>`km`*</h1>
+		</div>
+
+		<div class="tile">
+			<h1 id="mass" title="As of January 4th, 2023">`419,725kg`</h1>
+		</div>
+
+		<div class="tile">
+			<h1 id="longitude"><span id="longitudeSpan"></span>`°`</h1>
+		</div>
+
+		<div class="tile">
+			<h1 id="latitude"><span id="latitudeSpan"></span>`°`</h1>
+		</div>
+
+		<div class="tile">
+			<h1 id="distfromyou"></h1>
+		</div>
+	</div>
+
+	<div class="inputDiv">
+		<!-- <input id="content" oninput="UpdateMath(this.value)">
+		<button id="button" type="button" onclick="updateValue(content)">Evaluate</button>
+		<div id="render"></div> -->
+
+
+		<div class="container">
+			<p>Input Equation: <input id="MathInput" oninput="UpdateMath(this.value)" /></p> <button>Evaluate</button>
+
+			<p>Result:</p>
+			<div class="box" id="box0">
+				<div id="MathOutput0" class="output">` `<span id="resultBox"></span></div>
+			</div>
+			<div class="box" id="box1">
+				<div id="MathOutput1" class="output">` `<span id="resultBox"></span></div>
+			</div>
+		</div>
+	</div>
+
+	<div class="graph">
+		<iframe src="http://jeremy.favro.ca:8080/" class="responsive-iframe" frameBorder="0" scrolling="no"></iframe>
+	</div>
+
+
+
+
+	<script type="text/javascript">
+		var velo
+		var alti
+		var long
+		var lati
+
+		
+
+		var intervalId = window.setInterval(async function () {
+			getData('all')
+			await MathJax.Hub.Typeset()
+		}, 2000);
+
+
+		const HUB = MathJax.Hub;  // shorthand for the hub
+		const NUM_BUFFERS = 2;
+		let maths = [], box = [], hidden = 0;
+
+		//
+		//  Show the requested buffer.
+		//
+		const SHOW = (idx) => {
+			box[idx].style.display = "block";
+			hidden = (idx + 1) % NUM_BUFFERS;
+			box[hidden].style.display = "none";
+		}
+
+		//
+		//  Queue some initialization to run when MathJax is done
+		//  initializing.
+		//
+		HUB.Queue(() => {
+			for (let idx = 0; idx < NUM_BUFFERS; idx++) {
+				maths[idx] = HUB.getAllJax("MathOutput" + idx)[0];
+				box[idx] = document.getElementById("box" + idx);
+			}
+			SHOW(hidden); // box is initially hidden
+		});
+		//
+		//  The oninput event handler that typesets the math entered
+		//  by the user.  Render's the requested math into the hidden
+		//  buffer with a callback to show the div with the newly
+		//  rendered math (and hide the other one) when it's done.
+		//
+		window.UpdateMath = (amath) => {
+			HUB.Queue(["Text", maths[hidden], amath, [SHOW, hidden]]);
+			hidden = (hidden + 1) % NUM_BUFFERS;
+			evalInput()
+		}
+
+
+		// const input = document.getElementById("content");
+		// const log = document.getElementById("render");
+		// input.addEventListener("input", updateValue);
+
+		// async function updateValue(e) {
+		// 	console.log(e.target.value)
+		// 	log.textContent = `\`${e.target.value}\``
+
+		// 	//adding in queue 
+		// 	MathJax.Hub.Queue(["Typeset", MathJax.Hub, "render"]);
+		// }
+
+		function roundToTwo(num) {
+			return +(Math.round(num + "e+2") + "e-2");
+		}
+
+		async function getData(type) {
+			const response = await fetch('https://api.wheretheiss.at/v1/satellites/25544')
+			const data = await response.json()
+
+			var velo = data.velocity
+			var alti = data.altitude
+			var long = roundToTwo(data.longitude)
+			var lati = roundToTwo(data.latitude)
+			var mass = 419725
+			switch (type) {
+				case 'vel':
+					document.getElementById("velocitySpan").innerHTML = `${Math.round(velo)}`;
+					return (velo)
+					break;
+				case 'alt':
+					document.getElementById("altitudeSpan").innerHTML = `${Math.round(alti)}`;
+					return (alti)
+					break;
+				case 'lon':
+					document.getElementById("longitudeSpan").innerHTML = long + "°";
+					return (long)
+					break;
+				case 'lat':
+					document.getElementById("latitudeSpan").innerHTML = lati + "°";
+					return (lati)
+					break;
+				case 'mass':
+					return (mass)
+					break;
+				case 'all':
+					document.getElementById("velocitySpan").innerHTML = `${Math.round(velo)}`;
+					document.getElementById("altitudeSpan").innerHTML = `${Math.round(alti)}`;
+					document.getElementById("longitudeSpan").innerHTML = `${long}`;
+					document.getElementById("latitudeSpan").innerHTML = `${lati}`;
+					await MathJax.Hub.Typeset()
+					break;
+				default:
+				// code block
+			}
+
+
+		}
+
+
+		async function evalInput() {
+
+			var tex = document.getElementById("MathInput").value;
+
+			if (tex != '') {
+				fn = evaluatex(tex);
+				result = fn({ v: await getData('vel'), y: await getData('alt'), m: await getData('mass') });
+				setOutputValue(result)
+				console.log(result);
+			} else {
+				alert("Cannot evaluate blank input!")
+			}
+		}
+
+		function setOutputValue(result) {
+			document.getElementById("resultBox").textContent=`=\`${result}\``;
+		}
+
+	</script>
+
+</body>
