@@ -64,7 +64,7 @@ def pullData(url):
    df.reset_index(inplace=True)
    df = df.drop(['message', 'index'], axis=1)
    df = df.drop(0)
-   if len(df2) > 1000 :
+   if len(df2) > 500 :
     df2 = df2.iloc[1:, :]
    df2 = df2.append(df)
    df3 = pd.concat([df, df2])
@@ -84,14 +84,15 @@ fig = px.scatter_geo(df3, lat='Latitude', lon='Longitude', projection='orthograp
 
 fig.update_layout(margin=dict(l=0,r=0,t=0,b=0), paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
 fig.update_geos(showcoastlines=True, coastlinecolor='white', showland=True, showocean=True, oceancolor='#064273', showcountries=False, resolution=110)
+
 fig['layout']['uirevision'] = 'some_value'
 
 @app.callback(Output('live-update-graph', 'figure'), Input('interval-component', 'n_intervals'))
 def updateGraph(n):
     
     df3 = pullData(URL)
-    print(df3)
     clear_output(wait=True)
+    fig.add_trace()
     fig.update_traces(lat=df3['Latitude'], lon=df3['Longitude'], marker=dict(color='lime',size=10))
     # fig.update_geos(projection_rotation=dict(lat=df['Latitude'][1], lon=df['Longitude'][1]))
     
