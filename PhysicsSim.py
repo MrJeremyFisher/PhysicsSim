@@ -1,21 +1,20 @@
 #!/usr/bin/python3
+print("Content-Type: text/html\n\r\n")
 import pandas as pd
-import warnings
+# import warnings
 import plotly.express as px
 from IPython.display import clear_output
 import dash
 from dash import dcc, html
 from dash.dependencies import Input, Output
 from waitress import serve
-# import only datetime class
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
 
 
-warnings.simplefilter(action='ignore', category=FutureWarning)
+# warnings.simplefilter(action='ignore', category=FutureWarning)
 
-print("Content-Type: text/html\n\r\n")
 URL = 'http://api.open-notify.org/iss-now.json'
 
 # print("<form action=\"https://google.com\"> <input type=\"submit\" value=\"Go to Google\" /> </form>")
