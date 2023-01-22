@@ -8,13 +8,13 @@
 	<link rel="stylesheet" href="stylesheet.css">
 	<script src="node_modules/evaluatex/dist/evaluatex.min.js"></script>
 
-	<script type="text/x-mathjax-config">
-		//apply config
-		  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
-		</script>
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+	<link rel="stylesheet" href="MathQuill\mathquill.css" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+	<script src="MathQuill\mathquill.js"></script>
+	<script>
+		var MQ = MathQuill.getInterface(2);
 	</script>
-
+	<script src="keyboard.js"></script>
 
 	<title>
 		ISS Tracker
@@ -27,7 +27,7 @@
 
 	<div class="items">
 		<div class="tile">
-			
+
 			<h1 id="velocity">`v~=`<span id="velocitySpan"></span>`{km}/h`</h1>
 		</div>
 
@@ -52,30 +52,25 @@
 		</div>
 	</div>
 
-	<div class="inputDiv">
+	<div class="inputDiv" id="wrap">
 		<!-- <input id="content" oninput="UpdateMath(this.value)">
 		<button id="button" type="button" onclick="updateValue(content)">Evaluate</button>
 		<div id="render"></div> -->
 
 
 		<div class="container">
-			<p>Input Equation: <input id="MathInput" oninput="UpdateMath(this.value)" /></p> <button>Evaluate</button>
-
-			<p>Result:</p>
-			<div class="box" id="box0">
-				<div id="MathOutput0" class="output">` `<span id="resultBox"></span></div>
-			</div>
-			<div class="box" id="box1">
-				<div id="MathOutput1" class="output">` `<span id="resultBox"></span></div>
-			</div>
+			<h1><span id="mathInput"></span></h1>
+			<h1><span id="mathOutput">ttt</span></h1>
 		</div>
+
+		<textarea id="keyboard"></textarea>
 	</div>
 
 	<div class="graph">
 		<iframe src="http://jeremy.favro.ca:8080/" class="responsive-iframe" frameBorder="0" scrolling="no"></iframe>
 	</div>
 
-
+	
 
 
 	<script type="text/javascript">
@@ -84,62 +79,31 @@
 		var long
 		var lati
 
-		
-
-		var intervalId = window.setInterval(async function () {
-			getData('all')
-			await MathJax.Hub.Typeset()
-		}, 2000);
 
 
-		const HUB = MathJax.Hub;  // shorthand for the hub
-		const NUM_BUFFERS = 2;
-		let maths = [], box = [], hidden = 0;
+		var inputSpan = document.getElementById('mathInput');
+		var outputSpan = document.getElementById('mathOutput');
 
-		//
-		//  Show the requested buffer.
-		//
-		const SHOW = (idx) => {
-			box[idx].style.display = "block";
-			hidden = (idx + 1) % NUM_BUFFERS;
-			box[hidden].style.display = "none";
-		}
+		var inputMathField = MQ.MathField(inputSpan, {
+			handlers: {
+				edit: function () {
+					var enteredMath = inputMathField.latex(); // Get entered math in LaTeX format
+					checkAnswer(enteredMath);
 
-		//
-		//  Queue some initialization to run when MathJax is done
-		//  initializing.
-		//
-		HUB.Queue(() => {
-			for (let idx = 0; idx < NUM_BUFFERS; idx++) {
-				maths[idx] = HUB.getAllJax("MathOutput" + idx)[0];
-				box[idx] = document.getElementById("box" + idx);
+				}
 			}
-			SHOW(hidden); // box is initially hidden
 		});
-		//
-		//  The oninput event handler that typesets the math entered
-		//  by the user.  Render's the requested math into the hidden
-		//  buffer with a callback to show the div with the newly
-		//  rendered math (and hide the other one) when it's done.
-		//
-		window.UpdateMath = (amath) => {
-			HUB.Queue(["Text", maths[hidden], amath, [SHOW, hidden]]);
-			hidden = (hidden + 1) % NUM_BUFFERS;
-			evalInput()
+
+		async function checkAnswer(math) {
+			if (math != '') {
+				fn = evaluatex(math);
+				result = fn(variables = { v: await getData('vel'), y: await getData('alt'), m: await getData('mass') });
+				console.log(result)
+				outputSpan.textContent = result;
+			} else {
+			}
 		}
 
-
-		// const input = document.getElementById("content");
-		// const log = document.getElementById("render");
-		// input.addEventListener("input", updateValue);
-
-		// async function updateValue(e) {
-		// 	console.log(e.target.value)
-		// 	log.textContent = `\`${e.target.value}\``
-
-		// 	//adding in queue 
-		// 	MathJax.Hub.Queue(["Typeset", MathJax.Hub, "render"]);
-		// }
 
 		function roundToTwo(num) {
 			return +(Math.round(num + "e+2") + "e-2");
@@ -188,24 +152,6 @@
 
 		}
 
-
-		async function evalInput() {
-
-			var tex = document.getElementById("MathInput").value;
-
-			if (tex != '') {
-				fn = evaluatex(tex);
-				result = fn({ v: await getData('vel'), y: await getData('alt'), m: await getData('mass') });
-				setOutputValue(result)
-				console.log(result);
-			} else {
-				alert("Cannot evaluate blank input!")
-			}
-		}
-
-		function setOutputValue(result) {
-			document.getElementById("resultBox").textContent=`=\`${result}\``;
-		}
 
 	</script>
 
