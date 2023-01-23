@@ -14,8 +14,7 @@
 	<script>
 		var MQ = MathQuill.getInterface(2);
 	</script>
-	<script src="keyboard.js"></script>
-
+	<script src="index.js"></script>
 	<title>
 		ISS Tracker
 	</title>
@@ -26,61 +25,76 @@
 <body>
 
 	<div class="items">
-		<div class="tile">
-
-			<h1 id="velocity">`v~=`<span id="velocitySpan"></span>`{km}/h`</h1>
+		<div class="title">
+			<h1 id="title">ISS Tracker</h1>
 		</div>
 
 		<div class="tile">
-			<h1 id="altitude" title="Above sea level"><span id="altitudeSpan" title="Above sea level"></span>`km`*</h1>
+			<h1 id="velocity">v ≈ <span id="velocitySpan"></span> m/s</h1>
 		</div>
 
 		<div class="tile">
-			<h1 id="mass" title="As of January 4th, 2023">`419,725kg`</h1>
+			<h1 id="altitude" title="Above sea level">alt ≈ <span id="altitudeSpan" title="Above sea level"></span> km*</h1>
 		</div>
 
 		<div class="tile">
-			<h1 id="longitude"><span id="longitudeSpan"></span>`°`</h1>
+			<h1 id="mass" title="As of January 4th, 2023">m ≈ 419,725 kg</h1>
 		</div>
 
 		<div class="tile">
-			<h1 id="latitude"><span id="latitudeSpan"></span>`°`</h1>
+			<h1 id="longitude">lon ≈ <span id="longitudeSpan"></span> °</h1>
 		</div>
 
 		<div class="tile">
-			<h1 id="distfromyou"></h1>
+			<h1 id="latitude">lat ≈ <span id="latitudeSpan"></span> °</h1>
+		</div>
+
+		<div class="tile">
+			<h1 id="distFromYou">dist ≈ <span id="distFromYouSpan"></span> km</h1>
+
+			<div class="dropdown">
+				<button onclick="dropdown()" class="dropbtn">Click to enter lon/lat</button>
+				<div id="myDropdown" class="dropdown-content">
+					<input type="text" id="longitudeInput" class="longitudeInput">
+					<input type="text" id="latitudeInput" class="latitudeInput">
+				</div>
+			</div>
+		</div>
+
+		<div class="inputDiv" id="wrap">
+			<h1><span id="mathInput"></span>=<span id="mathOutput"></span></h1>
+
+			<div id="keyboard">
+				<div class="btn-group" role="group" aria-label="math functions">
+					<button type="button" class="btn btn-default" onClick='input("\\sqrt")'>√</button>
+					<button type="button" class="btn btn-default" onClick='input("\\sin")'>sin</button>
+					<button type="button" class="btn btn-default" onClick='input("\\cos")'>cos</button>
+					<button type="button" class="btn btn-default" onClick='input("\\tan")'>tan</button>
+					<button type="button" class="btn btn-default" onClick='input("\Pi")'>Pi</button>
+
+				</div>
+				<div class="dropdown">
+					<button onclick="dropdown2()" class="dropbtn2">Variables / Constants</button>
+					<div id="myDropdown2" class="dropdown-content2">
+						<h3>m = mass of ISS (kg)</h3>
+						<h3>v = velocity of ISS (m/s)</h3>
+						<h3>y = altitude of ISS (m, does not include radius)</h3>
+						<h3>r = radius of Earth (m)</h3>
+						<h3>d = distance from entered longitude and latitude (m)</h3>
+					</div>
+				</div>
+
+			</div>
 		</div>
 	</div>
 
-	<div class="inputDiv" id="wrap">
-		<!-- <input id="content" oninput="UpdateMath(this.value)">
-		<button id="button" type="button" onclick="updateValue(content)">Evaluate</button>
-		<div id="render"></div> -->
 
-
-		<div class="container">
-			<h1><span id="mathInput"></span></h1>
-			<h1><span id="mathOutput">ttt</span></h1>
-		</div>
-
-		<textarea id="keyboard"></textarea>
-	</div>
 
 	<div class="graph">
 		<iframe src="http://jeremy.favro.ca:8080/" class="responsive-iframe" frameBorder="0" scrolling="no"></iframe>
 	</div>
 
-	
-
-
 	<script type="text/javascript">
-		var velo
-		var alti
-		var long
-		var lati
-
-
-
 		var inputSpan = document.getElementById('mathInput');
 		var outputSpan = document.getElementById('mathOutput');
 
@@ -93,66 +107,6 @@
 				}
 			}
 		});
-
-		async function checkAnswer(math) {
-			if (math != '') {
-				fn = evaluatex(math);
-				result = fn(variables = { v: await getData('vel'), y: await getData('alt'), m: await getData('mass') });
-				console.log(result)
-				outputSpan.textContent = result;
-			} else {
-			}
-		}
-
-
-		function roundToTwo(num) {
-			return +(Math.round(num + "e+2") + "e-2");
-		}
-
-		async function getData(type) {
-			const response = await fetch('https://api.wheretheiss.at/v1/satellites/25544')
-			const data = await response.json()
-
-			var velo = data.velocity
-			var alti = data.altitude
-			var long = roundToTwo(data.longitude)
-			var lati = roundToTwo(data.latitude)
-			var mass = 419725
-			switch (type) {
-				case 'vel':
-					document.getElementById("velocitySpan").innerHTML = `${Math.round(velo)}`;
-					return (velo)
-					break;
-				case 'alt':
-					document.getElementById("altitudeSpan").innerHTML = `${Math.round(alti)}`;
-					return (alti)
-					break;
-				case 'lon':
-					document.getElementById("longitudeSpan").innerHTML = long + "°";
-					return (long)
-					break;
-				case 'lat':
-					document.getElementById("latitudeSpan").innerHTML = lati + "°";
-					return (lati)
-					break;
-				case 'mass':
-					return (mass)
-					break;
-				case 'all':
-					document.getElementById("velocitySpan").innerHTML = `${Math.round(velo)}`;
-					document.getElementById("altitudeSpan").innerHTML = `${Math.round(alti)}`;
-					document.getElementById("longitudeSpan").innerHTML = `${long}`;
-					document.getElementById("latitudeSpan").innerHTML = `${lati}`;
-					await MathJax.Hub.Typeset()
-					break;
-				default:
-				// code block
-			}
-
-
-		}
-
-
 	</script>
 
 </body>

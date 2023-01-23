@@ -1,56 +1,89 @@
 body {
 	background-color: #86BBBD;
-	font-family: Verdana;
+	font-family: Symbola;
+	src: url(font/Symbola.eot);
+	src: local("Symbola Regular"), local("Symbola"), url(font/Symbola.woff2) format("woff2"), url(font/Symbola.woff) format("woff"), url(font/Symbola.ttf) format("truetype"), url(font/Symbola.otf) format("opentype"), url(font/Symbola.svg#Symbola) format("svg");
 	text-align: center;
-	font-size: .6vw;
+	font-size: .58vw;
 }
 
+button {
+	border: 1px solid #777;
+	border-radius: 2px;
+	font-family: inherit;
+	padding: 1% 1% 1% 1%;
+	width: 5%;
+}
 
+.dropbtn2,
+.dropbtn {
+	width: 100%;
+}
+
+.title {
+	background-color: #fff;
+	width: 87%;
+	margin: 1% 1% 1% 1%;
+	padding: 30px 20px;
+	box-shadow: 2px 5px 10px rgba(0, 0, 0, 0.5);
+	display: inline-block;
+	vertical-align: middle;
+}
 
 .items {
-	border-style: solid;
-	border-color: red;
+	/* border-style: solid;
+	border-color: red; */
 	width: 45%;
 	/* margin-left: auto; */
 	float: right;
 }
 
 .tile {
-	border-style: solid;
+	/* border-style: solid; */
 	background-color: #fff;
-	margin: 10px 10px 10px auto;
+	margin: 1% 1% 1% 1%;
 	padding: 2% 3% 2% 3%;
-	min-height: 10%;
+	min-height: 10vh;
 	width: 23%;
+	vertical-align: middle;
 	display: inline-block;
-	vertical-align: top;
+	box-shadow: 2px 5px 10px rgba(0, 0, 0, 0.5);
+	
 }
+
+
 
 .inputDiv {
-	width: 45%;
-	clear: both;
-	float: right;
-	position: relative;
+	width: 86%;
+	margin: 1% 1% 1% 1%;
+	padding: 2% 3% 2% 3%;
+	display: inline-block;
+	vertical-align: middle;
 	background-color: #fff;
-	border-style: solid;
-	border-color: blue;
+	/* border-style: solid;
+	border-color: blue; */
+	box-shadow: 2px 5px 10px rgba(0, 0, 0, 0.5);
 }
 
+
 .graph {
-	border-style: solid;
-	border-color: greenyellow;
+	/* border-style: solid;
+	border-color: greenyellow; */
 
-
-	position: relative;
+	background-color: #fff;
+	position: absolute;
 	overflow: hidden;
 	width: 50%;
 	padding-top: 35%;
+	margin-top: 0.5%;
+	box-shadow: 2px 5px 10px rgba(0, 0, 0, 0.5);
 	/* 16:9 Aspect Ratio (divide 9 by 16 = 0.5625) */
 }
 
 .responsive-iframe {
 	position: absolute;
-
+	text-align: center;
+	margin: 0 0 0 1.5%;
 	top: 0;
 	left: 0;
 	bottom: 0;
@@ -63,47 +96,76 @@ body {
 	font-size: .6vw;
 }
 
-#keyboard {
+
+
+
+
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+	position: relative;
+	display: inline-block;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
 	display: none;
-  }
-  
-  .ui-keyboard-frac span {
-	background-image: url(https://cloud.githubusercontent.com/assets/2561440/12258775/26781542-b937-11e5-88b9-4a0b926dc8c0.png);
-	background-position: -10px -5px;
-	text-indent: -99em;
-	width: 1.2em;
-  }
-  
-  .ui-keyboard-sqrt span {
-	background-image: url(https://cloud.githubusercontent.com/assets/2561440/12258775/26781542-b937-11e5-88b9-4a0b926dc8c0.png);
-	background-position: -203px -5px;
-	text-indent: -99em;
-	width: 1.2em;
-  }
-  
-  
-  /* position keyboard at bottom of the screen - jQuery UI isn't even loaded! */
-  
-  .ui-keyboard {
-	border-radius: 0;
-	left: 0;
-	top: auto;
-	bottom: 0;
-	position: fixed;
-	width: 100%;
-  }
-  
-  .ui-keyboard div {
-	font-size: 1.2em;
-  }
-  
-  body {
-	margin-top: 100px;
-  }
-  
-  #wrap {
+	position: absolute;
+	background-color: #f1f1f1;
+	min-width: 160px;
+	box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+	z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+	color: black;
+	padding: 12px 16px;
+	text-decoration: none;
 	display: block;
-	margin: 0 auto;
-	text-align: center;
-  }
-  
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {
+	background-color: #ddd;
+}
+
+/* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+.show {
+	display: block;
+}
+
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown2 {
+	position: relative;
+	display: inline-block;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content2 {
+	display: none;
+	position: absolute;
+	background-color: #f1f1f1;
+	min-width: 160px;
+	box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+	z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content2 a {
+	color: black;
+	padding: 12px 16px;
+	text-decoration: none;
+	display: block;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content2 a:hover {
+	background-color: #ddd;
+}
+
+/* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+.show2 {
+	display: block;
+}

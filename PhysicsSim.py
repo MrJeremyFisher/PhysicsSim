@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 print("Content-Type: text/html\n\r\n")
 import pandas as pd
-# import warnings
+import warnings
 import plotly.express as px
 from IPython.display import clear_output
 import dash
@@ -13,7 +13,7 @@ from dateutil.relativedelta import relativedelta
 
 
 
-# warnings.simplefilter(action='ignore', category=FutureWarning)
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 URL = 'http://api.open-notify.org/iss-now.json'
 
@@ -41,7 +41,7 @@ app.layout = html.Div(
             #     'displayModeBar': False,
             #     responsive:True
             # },
-            style=dict(height='100vh', width='100vw'),
+            style=dict(height='95vh', width='95vw'),
             figure=dict(layout=dict(autosize=True)),
             config=dict(responsive=True, displayModeBar=False),
         ),
@@ -69,11 +69,12 @@ def pullData(url):
     df.reset_index(inplace=True)
     df = df.drop(['message', 'index'], axis=1)
     df = df.drop(0)
-    if len(df2) > 500:
+    if len(df2) > 5000:
         df2 = df2.iloc[1:, :]
     df2 = df2.append(df)
     df3 = df2
-    df3['colours'] = df3['Time'].apply(lambda x: 10 if x>=datetime.now()-relativedelta(seconds=3) else (5 if x<=datetime.now() else 1))
+    df3['colours'] = df3['Time'].apply(lambda x: '#eb3434' if x>=datetime.now()-relativedelta(seconds=2.1) else ('#303030' if x<=datetime.now() else 1))
+    df3['size'] = df3['Time'].apply(lambda x: 20 if x>=datetime.now()-relativedelta(seconds=2.1) else (5 if x<=datetime.now() else 1))
     # print(df3)
     return df3
 
@@ -90,7 +91,7 @@ fig = px.scatter_geo(df3, lat='Latitude', lon='Longitude',
 
 
 fig.update_layout(margin=dict(l=0, r=0, t=0, b=0),
-                  paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
+                  paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', showlegend=False)
 fig.update_geos(showcoastlines=True, coastlinecolor='white', showland=True,
                 showocean=True, oceancolor='#064273', showcountries=False, resolution=110)
 
@@ -104,7 +105,7 @@ def updateGraph(n):
     clear_output(wait=True)
 
     fig.update_traces(
-        lat=df3['Latitude'], lon=df3['Longitude'], marker=dict(color=df3['colours'], size=df3['colours']))
+        lat=df3['Latitude'], lon=df3['Longitude'], marker=dict(color=df3['colours'], size=df3['size']), marker_line=dict(width=2, color=df3['colours']))
     # print(df3['Longitude'])
 
     # fig.update_geos(projection_rotation=dict(lat=df['Latitude'][1], lon=df['Longitude'][1]))
