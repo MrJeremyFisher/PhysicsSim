@@ -71,7 +71,7 @@ def pullData(url):
     df = df.drop(0)
     if len(df2) > 5000:
         df2 = df2.iloc[1:, :]
-    df2 = df2.append(df)
+    df2 = pd.concat((df2, df))
     df3 = df2
     df3['colours'] = df3['Time'].apply(lambda x: '#eb3434' if x>=datetime.now()-relativedelta(seconds=2.1) else ('#303030' if x<=datetime.now() else 1))
     df3['size'] = df3['Time'].apply(lambda x: 20 if x>=datetime.now()-relativedelta(seconds=2.1) else (5 if x<=datetime.now() else 1))

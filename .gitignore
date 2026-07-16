@@ -126,3 +126,4 @@ node_modules/mathjax/es5/ui/safe.js
 __pycache__/Dash.cpython-310.pyc
 __pycache__/PhysicsSim.cpython-310.pyc
 .vscode/launch.json
+.venv/

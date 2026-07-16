@@ -12,10 +12,6 @@ async function checkAnswer(math) {
             var dist = document.getElementById("distFromYouSpan").innerHTML
             var mass = 419725
             
-            
-            
-            
-            
             fn = evaluatex(math);
             result = fn(variables = { v: velo/3.6, y: alti * 1000, m: mass, d: dist * 1000, r: 6378000 });
             outputSpan.textContent = result;
